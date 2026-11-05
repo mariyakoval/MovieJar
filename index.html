@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MovieJar</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#1d1411;--sf:#2b1e18;--sf2:#38281f;--tx:#f7ead9;--mu:#bfa88f;--am:#ffb347;--pk:#ff7d8f;--ln:#4a362b;
+--serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:radial-gradient(900px 500px at 50% -10%,#4a2a17 0,var(--bg) 70%) fixed,var(--bg);color:var(--tx);font:16px/1.5 var(--sans);min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--am);outline-offset:2px}
+.app{max-width:960px;margin:0 auto;padding:16px 16px 96px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 18px}
+.logo{font:800 26px var(--serif);letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.logo i{width:22px;height:26px;border-radius:6px 6px 9px 9px;background:linear-gradient(var(--am),#e07b1a);box-shadow:0 0 18px #ffb34788;display:inline-block}
+nav{display:flex;gap:4px}
+nav button{padding:10px 14px;border-radius:999px;color:var(--mu);min-height:44px}
+nav button[aria-current=page]{background:var(--sf2);color:var(--tx)}
+.me{width:44px;height:44px;border-radius:50%;background:var(--sf2);font-weight:700;color:var(--am)}
+@media(max-width:700px){nav{position:fixed;left:0;right:0;bottom:0;z-index:5;background:#241913f2;backdrop-filter:blur(10px);justify-content:space-around;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ln)}
+nav button{padding:8px 6px;font-size:13px;flex:1;border-radius:12px}}
+h1{font:800 clamp(34px,7vw,56px)/1.05 var(--serif);letter-spacing:-1px;margin:8px 0 10px}
+h2{font:800 30px/1.1 var(--serif);margin:4px 0 6px}
+p.lead{color:var(--mu);margin:0 0 22px;max-width:46ch}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.big{grid-template-columns:1fr}}
+.cta{border-radius:24px;padding:26px 22px;text-align:left;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .15s}
+.cta:active{transform:scale(.98)}
+.cta b{font:800 30px var(--serif)}
+.cta span{opacity:.85}
+.cta.add{background:linear-gradient(135deg,#ffb347,#ff8a3d);color:#2a1405}
+.cta.pick{background:linear-gradient(135deg,#ff7d8f,#c2477c);color:#2b0a17}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.ghost{padding:12px 18px;border-radius:999px;border:1.5px solid var(--ln);min-height:44px;background:var(--sf)}
+.ghost:hover{border-color:var(--am)}
+.solid{padding:12px 22px;border-radius:999px;background:var(--am);color:#2a1405;font-weight:700;min-height:44px}
+.solid:hover{filter:brightness(1.08)}
+.stat{color:var(--mu);margin-top:26px}
+.stat strong{color:var(--am)}
+label.q,.q{display:block;font:700 18px var(--serif);margin:24px 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:10px 16px;border-radius:999px;background:var(--sf);border:1.5px solid var(--ln);min-height:44px}
+.chip[aria-pressed=true]{background:var(--am);color:#2a1405;border-color:var(--am);font-weight:700}
+input[type=text]{width:100%;padding:16px 18px;border-radius:16px;border:1.5px solid var(--ln);background:var(--sf);color:var(--tx);font:500 20px var(--sans)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:18px}
+.card{background:var(--sf);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--ln)}
+.poster{aspect-ratio:2/3;padding:14px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.poster .em{font-size:44px;filter:drop-shadow(0 4px 6px #0006)}
+.poster .t{font:800 21px/1.05 var(--serif);text-shadow:0 2px 8px #0008}
+.poster .y{font-size:13px;opacity:.9}
+.meta{padding:10px 12px;color:var(--mu);font-size:13px}
+.acts{display:flex;border-top:1px solid var(--ln)}
+.acts button{flex:1;padding:12px 6px;min-height:44px;font-size:14px}
+.acts button:hover{background:var(--sf2)}
+.acts button+button{border-left:1px solid var(--ln)}
+.hero{display:grid;grid-template-columns:minmax(200px,300px) 1fr;gap:28px;align-items:center;margin-top:18px}
+@media(max-width:620px){.hero{grid-template-columns:1fr}}
+.hero .card{animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{transform:rotate(-4deg) scale(.85);opacity:0}to{transform:none;opacity:1}}
+.badge{display:inline-block;padding:6px 12px;border-radius:999px;font-size:14px;font-weight:700}
+.badge.ok{background:#3a5a2b;color:#d9f5c4}.badge.near{background:#5a3f1c;color:#ffd9a0}
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:18px}
+.tri .card{animation:pop .4s both}.tri .card:nth-child(2){animation-delay:.08s}.tri .card:nth-child(3){animation-delay:.16s}
+.empty{padding:40px 20px;text-align:center;color:var(--mu);border:1.5px dashed var(--ln);border-radius:20px;margin-top:18px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:var(--tx);color:#2a1405;padding:12px 20px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:9}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="logo"><i></i>MovieJar</div>
+<nav id="nav" aria-label="Main"></nav>
+<button class="me" data-go="seen" aria-label="Your account: Seen movies">Me</button>
+</header>
+<main id="view"></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+var VIBES=['light','intense','thought-provoking','cozy'],GENRES=['drama','comedy','horror','adventure','thriller','documentary'],WITH=['solo','partner','friends','any'];
+var EMO={drama:'🎭',comedy:'😂',horror:'👻',adventure:'🧭',thriller:'🔪',documentary:'🎥'};
+var COL={drama:['#5b3a7a','#2a1738'],comedy:['#e69a2e','#8a3d12'],horror:['#7a1f2b','#1a0a0d'],adventure:['#2f7a6b','#10312c'],thriller:['#3a4a7a','#141a33'],documentary:['#8a7a3a','#2d2812']};
+var SEED=[
+['Spirited Away',2001,'cozy','adventure','any'],['Parasite',2019,'thought-provoking','thriller','partner'],
+['Mad Max: Fury Road',2015,'intense','adventure','friends'],['The Grand Budapest Hotel',2014,'light','comedy','any'],
+['Hereditary',2018,'intense','horror','solo'],['Free Solo',2018,'intense','documentary','any'],
+['Paddington 2',2017,'cozy','comedy','any'],['Arrival',2016,'thought-provoking','drama','solo'],
+['Knives Out',2019,'light','thriller','friends'],['My Octopus Teacher',2020,'cozy','documentary','solo'],
+['Past Lives',2023,'thought-provoking','drama','partner'],['Superbad',2007,'light','comedy','friends']];
+var S={movies:null,view:'home'},add={vibe:null,genre:null,with:null,title:''},pick={vibe:'any',genre:'any',with:'any'},res=null,tri=null;
+function load(){try{var r=localStorage.getItem('moviejar');if(r)S.movies=JSON.parse(r)}catch(e){}
+if(!S.movies)S.movies=SEED.map(function(m,i){return{id:i+1,title:m[0],year:m[1],vibe:m[2],genre:m[3],with:m[4],seen:i===11}})}
+function save(){try{localStorage.setItem('moviejar',JSON.stringify(S.movies))}catch(e){}}
+function $(s){return document.querySelector(s)}
+function toast(t){var e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove('on')},1800)}
+function unseen(){return S.movies.filter(function(m){return!m.seen})}
+function seen(){return S.movies.filter(function(m){return m.seen})}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function score(m,f){return(f.vibe==='any'||m.vibe===f.vibe)+(f.genre==='any'||m.genre===f.genre)+(f.with==='any'||m.with==='any'||m.with===f.with)}
+function pool(f){var u=unseen(),best=0;u.forEach(function(m){best=Math.max(best,score(m,f))});
+return{list:u.filter(function(m){return score(m,f)===best}),exact:best===3}}
+function poster(m){var c=COL[m.genre];return'<div class="poster" style="background:linear-gradient(160deg,'+c[0]+','+c[1]+')"><span class="em">'+EMO[m.genre]+'</span><div><div class="t">'+esc(m.title)+'</div><div class="y">'+m.year+'</div></div></div>'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function meta(m){return'<div class="meta">'+m.vibe+', '+m.genre+', '+(m.with==='any'?'any company':m.with)+'</div>'}
+function chips(name,opts,cur,any){var o=any?['any'].concat(opts):opts;
+return'<div class="chips" role="group">'+o.map(function(v){return'<button class="chip" data-chip="'+name+'" data-v="'+v+'" aria-pressed="'+(cur===v)+'">'+(v==='any'?'Anything':v)+'</button>'}).join('')+'</div>'}
+function cardActs(m,kind){return'<div class="acts">'+(kind==='seen'?'<button data-back="'+m.id+'">Back to list</button>':'<button data-watched="'+m.id+'">Watched</button>')+'<button data-del="'+m.id+'" aria-label="Remove '+esc(m.title)+'">Remove</button></div>'}
+function grid(list,kind){return'<div class="grid">'+list.map(function(m){return'<div class="card">'+poster(m)+meta(m)+cardActs(m,kind)+'</div>'}).join('')+'</div>'}
+var V={
+home:function(){return'<h1>Stop scrolling.<br>Start watching.</h1><p class="lead">Drop movies in the jar when you hear about them. Pull one out when you’re ready.</p>'+
+'<div class="big"><button class="cta add" data-go="add"><b>Add a movie</b><span>Save it in 15 seconds</span></button><button class="cta pick" data-go="pick"><b>Pick a movie</b><span>Three questions, one match</span></button></div>'+
+'<div class="row"><button class="ghost" data-surprise>🎲 Surprise me</button></div><p class="stat"><strong>'+unseen().length+'</strong> in the jar, <strong>'+seen().length+'</strong> seen</p>'},
+add:function(){var ok=add.title.trim()&&add.vibe&&add.genre&&add.with;
+return'<h2>Add a movie</h2><p class="lead">Four taps and it’s in the jar.</p><label class="q" for="ti">Title</label><input type="text" id="ti" placeholder="e.g. Everything Everywhere All at Once" value="'+esc(add.title)+'" autocomplete="off">'+
+'<div class="q">Vibe</div>'+chips('vibe',VIBES,add.vibe)+'<div class="q">Genre</div>'+chips('genre',GENRES,add.genre)+'<div class="q">Watching with</div>'+chips('with',WITH,add.with)+
+'<div class="row"><button class="solid" id="saveBtn" data-save '+(ok?'':'disabled style="opacity:.45"')+'>Save to jar</button></div>'},
+pick:function(){var h='<h2>Pick a movie</h2><p class="lead">What are you in the mood for tonight?</p><div class="q">What vibe are you in the mood for?</div>'+chips('pvibe',VIBES,pick.vibe,1)+
+'<div class="q">What genre would you prefer?</div>'+chips('pgenre',GENRES,pick.genre,1)+'<div class="q">Who are you watching with?</div>'+chips('pwith',WITH.slice(0,3),pick.with,1)+
+'<div class="row"><button class="solid" data-go-pick>Find my movie</button><button class="ghost" data-surprise>🎲 Surprise me</button></div>';
+if(res==='none')h+='<div class="empty">Your jar is empty. Add a movie first.</div>';
+else if(res)h+='<div class="hero" id="result">'+'<div class="card">'+poster(res.m)+meta(res.m)+'</div><div>'+
+(res.exact?'<span class="badge ok">Perfect match</span>':'<span class="badge near">Closest match</span><p class="lead" style="margin-top:10px">Nothing fits every answer, so this is the nearest thing in your jar.</p>')+
+'<h2 style="margin-top:12px">'+esc(res.m.title)+'</h2><div class="row"><button class="solid" data-watched="'+res.m.id+'">Watching this</button><button class="ghost" data-reroll>Try another</button></div></div></div>';
+return h},
+surprise:function(){return'<h2>Surprise me</h2><p class="lead">Three random movies from your jar. Reroll as often as you like.</p><div class="row" style="margin:0"><button class="solid" data-surprise>🎲 Reroll</button></div>'+
+(tri&&tri.length?'<div class="tri">'+tri.map(function(m){return'<div class="card">'+poster(m)+meta(m)+'<div class="acts"><button data-watched="'+m.id+'">Watching this</button></div></div>'}).join('')+'</div>':'<div class="empty">Nothing in the jar yet. Add a movie first.</div>')},
+list:function(){var u=unseen();return'<h2>Watchlist</h2><p class="lead">'+u.length+' waiting in the jar.</p>'+(u.length?grid(u,'list'):'<div class="empty">The jar is empty.<div class="row" style="justify-content:center"><button class="solid" data-go="add">Add a movie</button></div></div>')},
+seen:function(){var s=seen();return'<h2>Seen</h2><p class="lead">Everything you’ve watched, '+s.length+' so far.</p>'+(s.length?grid(s,'seen'):'<div class="empty">Nothing here yet. Mark a movie as watched and it lands here.</div>')}};
+var NAV=[['home','Home'],['add','Add Movie'],['pick','Pick a Movie'],['list','Watchlist'],['seen','Seen']];
+function render(){var cur=S.view==='surprise'?'pick':S.view;
+$('#nav').innerHTML=NAV.map(function(n){return'<button data-go="'+n[0]+'"'+(cur===n[0]?' aria-current="page"':'')+'>'+n[1]+'</button>'}).join('');
+$('#view').innerHTML=V[S.view]();window.scrollTo(0,0)}
+function go(v){S.view=v;if(v==='pick')res=null;if(v==='add')add={vibe:null,genre:null,with:null,title:''};render()}
+function doPick(prev){var p=pool(pick);if(!unseen().length){res='none';return}
+var l=p.list.filter(function(m){return!prev||m.id!==prev});if(!l.length)l=p.list;res={m:rnd(l),exact:p.exact}}
+function surprise(){var u=unseen().slice(),o=[];while(o.length<3&&u.length)o.push(u.splice(Math.floor(Math.random()*u.length),1)[0]);tri=o;S.view='surprise';render()}
+function setSeen(id,v){S.movies.forEach(function(m){if(m.id==id)m.seen=v});save()}
+document.addEventListener('click',function(e){var t=e.target.closest('button');if(!t)return;var d=t.dataset;
+if(d.go){go(d.go)}
+else if('surprise' in d){surprise()}
+else if(d.chip){var k=d.chip;if(k[0]==='p'){pick[k.slice(1)]=d.v;var y=window.scrollY;render();window.scrollTo(0,y)}else{add[k]=d.v;add.title=$('#ti').value;var y2=window.scrollY;render();window.scrollTo(0,y2)}}
+else if('goPick' in d){doPick();var y3=0;render();var r=$('#result');if(r)r.scrollIntoView({behavior:'smooth',block:'center'})}
+else if('reroll' in d){doPick(res&&res.m&&res.m.id);var y4=window.scrollY;render();window.scrollTo(0,y4)}
+else if('save' in d){var ti=$('#ti').value.trim();if(!(ti&&add.vibe&&add.genre&&add.with)){toast('Fill in all four first');return}
+S.movies.push({id:Date.now(),title:ti,year:new Date().getFullYear(),vibe:add.vibe,genre:add.genre,with:add.with,seen:false});save();toast('Added to the jar');go('list')}
+else if(d.watched){setSeen(d.watched,true);toast('Moved to Seen');if(S.view==='pick'){res=null}if(S.view==='surprise'){tri=tri.filter(function(m){return m.id!=d.watched})}render()}
+else if(d.back){setSeen(d.back,false);toast('Back in the jar');render()}
+else if(d.del){S.movies=S.movies.filter(function(m){return m.id!=d.del});save();toast('Removed');render()}});
+document.addEventListener('input',function(e){if(e.target.id==='ti'){add.title=e.target.value;var b=$('#saveBtn');var ok=add.title.trim()&&add.vibe&&add.genre&&add.with;b.disabled=!ok;b.style.opacity=ok?1:.45}});
+load();render();
+</script>
+</body>
+</html>
